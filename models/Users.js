@@ -21,8 +21,20 @@ module.exports = (sequelize, DataTypes) => {
       },
       email: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       pseudo: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      imageUrl: {
+        type: DataTypes.STRING,
+      },
+      bio: {
         type: DataTypes.STRING,
       },
     },
