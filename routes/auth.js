@@ -5,11 +5,11 @@ const express = require("express");
 const router = express.Router();
 
 // authentification controler are imported
-const authCtrl = require("../controlers/auth");
+const { signup, login } = require("../controlers/auth");
 
 // adding needed routes
-router.post("/signup", authCtrl.signup);
-router.post("/login", authCtrl.login);
+router.post("/signup", signup);
+router.post("/login", login);
 
 // export router to use it in app file
 module.exports = router;
