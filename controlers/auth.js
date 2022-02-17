@@ -11,7 +11,10 @@ const { signUpErrors } = require("../utils/authErrors");
 const bcrypt = require("bcrypt");
 
 // jwt module is requiered to generate a token
-const jwt = require("json-web-token");
+const jwt = require("jsonwebtoken");
+
+// token maxAge in second (1h)
+const tokenMaxAge = 3600;
 
 /* ---------------------------------- */
 /*      Signup controler section      */
@@ -35,14 +38,13 @@ exports.signup = async (req, res, next) => {
   } catch (err) {
     // if there is a validation error
     if (err.errors) {
-      console.log("=== errors ===>", err.errors);
       // errors messages are stored in a object that can be used by the front
       let errors = signUpErrors(err);
       // sending a response with a status code 400 and an errors object
-      res.status(400).json({ errors });
+      res.status(err.status || 400).json({ errors });
     } else {
       // sending a response with a status code 500 and an error message
-      res.status(500).json({ error: err.message });
+      res.status(err.status || 500).json({ error: err.message });
     }
   }
 };
@@ -50,6 +52,41 @@ exports.signup = async (req, res, next) => {
 /* --------------------------------- */
 /*      Login controler section      */
 /* --------------------------------- */
-exports.login = (req, res, next) => {
-  // look for the user with the same
+exports.login = async (req, res, next) => {
+  try {
+    // look for the user with the same in database
+    const userArray = await User.findAll({ where: { email: req.body.email } });
+    // recovering the data from the array recieved
+    const user = userArray[0];
+    // handle case where user is not found
+    if (user.length === 0) {
+      const err = new Error("User not found !");
+      res.status(404).json({ error: err.message });
+    }
+    // boolean constant to check if password is valid
+    const isPassWordValid = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    // if password deos not match
+    if (!isPassWordValid) {
+      const err = new Error("Password is not valid !");
+      res.status(401).json({ error: err.message });
+    }
+    // === > code below is accessible only if user is found and if password id valid
+    // a token is signed with userId value
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_KEY, {
+      expiresIn: tokenMaxAge,
+    });
+    // set response status code to 200, send an object with the userId and the token
+    res.status(200).json({
+      auth: {
+        userId: user.id,
+        token,
+      },
+    });
+    // generate a token with the}
+  } catch (err) {
+    console.log(err);
+  }
 };

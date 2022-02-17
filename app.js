@@ -18,13 +18,24 @@ require("dotenv").config();
 /* ------------------------------------- */
 // on se synchronyse avec la base de donnée
 const db = require("./models");
+// db.sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log("Connection has been established successfully.");
+//     // ajouter le listen à l'intérieur
+//   })
+//   .catch((error) => console.log("Unable to connect to the database:", error));
+
 db.sequelize
-  .sync({ alter: true })
+  .sync()
+  // .sync({alter:true})
   .then(() => {
-    console.log("Connection has been established successfully.");
+    console.log("Synchronisation has been established successfully.");
     // ajouter le listen à l'intérieur
   })
-  .catch((error) => console.log("Unable to connect to the database:", error));
+  .catch((error) =>
+    console.log("Unable to Synchronisation with the database:", error)
+  );
 
 /* ---------------------------- */
 /*      Middleware section      */
