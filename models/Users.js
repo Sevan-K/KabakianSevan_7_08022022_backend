@@ -58,10 +58,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "User",
-      indexes: [
-        { fields: ["email"], unique: true },
-        { fields: ["pseudo"], unique: true },
-      ],
+      // indexes: [
+      //   { fields: ["email"], unique: true },
+      //   { fields: ["pseudo"], unique: true },
+      // ],
     }
   );
   return User;

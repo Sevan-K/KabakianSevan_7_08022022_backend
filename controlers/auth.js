@@ -13,8 +13,10 @@ const bcrypt = require("bcrypt");
 // jwt module is requiered to generate a token
 const jwt = require("jsonwebtoken");
 
-// token maxAge in second (1h)
-const tokenMaxAge = 3600;
+// token maxAge in second (1h) !!!!!!!!!!! à vérifier
+const tokenMaxAge = 1;
+// cookie maxAge in mili second (1h)
+const cookieMaxAge = tokenMaxAge * 60 * 60 * 1000;
 
 /* ---------------------------------- */
 /*      Signup controler section      */
@@ -74,19 +76,37 @@ exports.login = async (req, res, next) => {
       res.status(401).json({ error: err.message });
     }
     // === > code below is accessible only if user is found and if password id valid
-    // a token is signed with userId value
+    // a token is signed with userId value (expire unit seconds)
     const token = jwt.sign({ userId: user.id }, process.env.JWT_KEY, {
-      expiresIn: tokenMaxAge,
+      expiresIn: `${tokenMaxAge}h`,
     });
-    // set response status code to 200, send an object with the userId and the token
+    // set response status code to 200, add a cookie with the token (expire unit mili seconds)
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: cookieMaxAge,
+      // secure: true,
+    });
     res.status(200).json({
       auth: {
         userId: user.id,
         token,
       },
     });
+
     // generate a token with the}
   } catch (err) {
     console.log(err);
   }
+};
+
+/* ------------------------------------ */
+/*      TokenToId controler section      */
+/* ------------------------------------ */
+exports.tokenToId = (req, res, next) => {
+  // get cookie from the request
+  const token = req.cookies.token;
+  // checking if there is a cookie
+  // decode the token within the cookie
+  console.log(token);
+  res.status(200).json({ test: token });
 };
