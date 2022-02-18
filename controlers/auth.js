@@ -43,10 +43,10 @@ exports.signup = async (req, res, next) => {
       // errors messages are stored in a object that can be used by the front
       let errors = signUpErrors(err);
       // sending a response with a status code 400 and an errors object
-      res.status(err.status || 400).json({ errors });
+      return res.status(err.status || 400).json({ errors });
     } else {
       // sending a response with a status code 500 and an error message
-      res.status(err.status || 500).json({ error: err.message });
+      return res.status(err.status || 500).json({ error: err.message });
     }
   }
 };
@@ -63,7 +63,7 @@ exports.login = async (req, res, next) => {
     // handle case where user is not found
     if (user.length === 0) {
       const err = new Error("User not found !");
-      res.status(404).json({ error: err.message });
+      return res.status(404).json({ error: err.message });
     }
     // boolean constant to check if password is valid
     const isPassWordValid = await bcrypt.compare(
@@ -73,7 +73,7 @@ exports.login = async (req, res, next) => {
     // if password deos not match
     if (!isPassWordValid) {
       const err = new Error("Password is not valid !");
-      res.status(401).json({ error: err.message });
+      return res.status(401).json({ error: err.message });
     }
     // === > code below is accessible only if user is found and if password id valid
     // a token is signed with userId value (expire unit seconds)
@@ -81,32 +81,55 @@ exports.login = async (req, res, next) => {
       expiresIn: `${tokenMaxAge}h`,
     });
     // set response status code to 200, add a cookie with the token (expire unit mili seconds)
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: cookieMaxAge,
-      // secure: true,
-    });
-    res.status(200).json({
-      auth: {
-        userId: user.id,
-        token,
-      },
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        maxAge: cookieMaxAge,
+        secure: true,
+      })
+      .status(200)
+      .json({ message: "Token cookie successfully sent !" });
 
     // generate a token with the}
   } catch (err) {
-    console.log(err);
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 
-/* ------------------------------------ */
+/* ------------------------------------- */
 /*      TokenToId controler section      */
-/* ------------------------------------ */
+/* ------------------------------------- */
 exports.tokenToId = (req, res, next) => {
   // get cookie from the request
   const token = req.cookies.token;
-  // checking if there is a cookie
+  // if there is no cookie send an error message
+  if (!token) {
+    const err = new Error("No token !");
+    return res.status(200).json({ error: err.message });
+  }
   // decode the token within the cookie
-  console.log(token);
-  res.status(200).json({ test: token });
+  const decodedToken = jwt.verify(token, process.env.JWT_KEY);
+  if (!decodedToken) {
+    const err = new Error("Token is not valid !");
+    return res.clearCookie("token").status(200).json({ error: err.message });
+  }
+  // response status code is set to 200 and userId is sent
+  res.status(200).json({ userId: decodedToken.userId });
+};
+
+/* ---------------------------------- */
+/*      LogOut controler section      */
+/* ---------------------------------- */
+exports.logout = (req, res, next) => {
+  // get cookie from the request
+  const token = req.cookies.token;
+  //  if there is no token cookie it mean the user is not logged in
+  if (!token) {
+    const err = new Error("Not logged in !");
+    return res.status(200).json({ error: err.message });
+  }
+  res
+    .clearCookie("token")
+    .status(200)
+    .json({ message: "Successfully Log Out !" });
 };

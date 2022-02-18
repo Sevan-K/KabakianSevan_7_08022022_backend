@@ -16,6 +16,8 @@ require("dotenv").config();
 // cookies parser module is required
 const cookieParser = require("cookie-parser");
 
+// const cors = require("cors");
+
 /* ------------------------------------- */
 /*      Mongoose connection section      */
 /* ------------------------------------- */
@@ -43,10 +45,6 @@ db.sequelize
 /* ---------------------------- */
 /*      Middleware section      */
 /* ---------------------------- */
-// app.use("/api/auth/signup", (req, res, next) => {
-//   console.log("Hello World");
-//   res.status(200).json("Hello World");
-// });
 
 // middleware to add header to responses
 app.use((req, res, next) => {
@@ -63,6 +61,16 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
+
+// const corsOptions = {
+//   origin: process.env.CLIENT_URL,
+//   credentials: true,
+//   allowedHeaders: ["sessionId", "Content-Type"],
+//   exposedHeaders: ["sessionId"],
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   preflightContinue: false,
+// };
+// app.use(cors(corsOptions));
 
 // code to intercept request that have a JSON type content
 app.use(express.json());
