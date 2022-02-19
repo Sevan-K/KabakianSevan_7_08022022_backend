@@ -24,3 +24,5 @@ module.exports = (request, response, next) => {
     response.status(401).json({ error: new Error("Invalid request !") });
   }
 };
+
+// ajouter la logiquer pour valider la présence d'un cookie valide
