@@ -9,6 +9,7 @@ const app = express();
 
 // routes are required
 const authRoutes = require("./routes/auth");
+const usersRoute = require("./routes/users");
 
 // dotenv module is required
 require("dotenv").config();
@@ -78,7 +79,9 @@ app.use(express.json());
 // add the cookie-parser
 app.use(cookieParser());
 
+// setting common path for each routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", usersRoute);
 
 // app is exported to be used in server file
 module.exports = app;
