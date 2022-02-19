@@ -42,12 +42,13 @@ exports.signup = async (req, res, next) => {
     if (err.errors) {
       // errors messages are stored in a object that can be used by the front
       let errors = signUpErrors(err);
-      // sending a response with a status code 400 and an errors object
-      return res.status(err.status || 400).json({ errors });
+      // sending a response with a status code 200 and an errors object
+      return res.status(200).json({ errors });
     } else {
       // sending a response with a status code 500 and an error message
       return res.status(err.status || 500).json({ error: err.message });
     }
+    
   }
 };
 
