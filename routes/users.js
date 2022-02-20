@@ -5,10 +5,18 @@ const express = require("express");
 const router = express.Router();
 
 // users controler are imported
-const { readAllUsers } = require("../controlers/users");
+const {
+  readAllUsers,
+  readOneUser,
+  updateUser,
+  deleteUser,
+} = require("../controlers/users");
 
 // adding needed routes
 router.get("/", readAllUsers);
+router.get("/:id", readOneUser);
+router.put("/:id", updateUser);
+router.delete("/id", deleteUser);
 
 // export router to use it in app file
 module.exports = router;
