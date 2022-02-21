@@ -28,7 +28,13 @@ exports.readAllUsers = (req, res, next) => {
 exports.readOneUser = async (req, res, next) => {
   try {
     // the concerned id is recoverd from request parameters
-    const userIdToRead = req.params.id;
+    const userIdToRead = parseInt(req.params.id, 10);
+    // check if userId from the decoded token is the same than the one to read
+    if (req.auth.userId !== userIdToRead) {
+      return res
+        .status(403)
+        .json({ error: "You do not have access to that content !" });
+    }
     // find the user based on its id
     const userArray = await User.findAll({ where: { id: userIdToRead } });
     // get the items stored into
@@ -36,7 +42,6 @@ exports.readOneUser = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    //  !!!! add safety to be sure the user is lookinf for itself
     // sending a response with a status code 200 and user object
     res.status(200).json({ user });
   } catch (err) {

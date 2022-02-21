@@ -48,7 +48,6 @@ exports.signup = async (req, res, next) => {
       // sending a response with a status code 500 and an error message
       return res.status(err.status || 500).json({ error: err.message });
     }
-    
   }
 };
 
@@ -105,14 +104,15 @@ exports.tokenToId = (req, res, next) => {
   const token = req.cookies.token;
   // if there is no cookie send an error message
   if (!token) {
-    const err = new Error("No token !");
-    return res.status(200).json({ error: err.message });
+    const err = new Error("No token found!");
+    return res.status(404).json({ error: err.message });
   }
   // decode the token within the cookie
   const decodedToken = jwt.verify(token, process.env.JWT_KEY);
+  // checking if decoded token is valid
   if (!decodedToken) {
     const err = new Error("Token is not valid !");
-    return res.clearCookie("token").status(200).json({ error: err.message });
+    return res.clearCookie("token").status(403).json({ error: err.message });
   }
   // response status code is set to 200 and userId is sent
   res.status(200).json({ userId: decodedToken.userId });
