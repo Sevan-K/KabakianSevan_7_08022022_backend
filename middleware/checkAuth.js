@@ -8,8 +8,9 @@ module.exports = (req, res, next) => {
     const token = req.cookies.token;
     // if there is no cookie send an error message
     if (!token) {
-      const err = new Error("No token found!");
-      return res.status(404).json({ error: err.message });
+      return res
+        .status(404)
+        .json({ message: "No token found while atenticating route!" });
     }
     // decode the token within the cookie
     const decodedToken = jwt.verify(token, process.env.JWT_KEY);

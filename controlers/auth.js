@@ -104,8 +104,7 @@ exports.tokenToId = (req, res, next) => {
   const token = req.cookies.token;
   // if there is no cookie send an error message
   if (!token) {
-    const err = new Error("No token found!");
-    return res.status(404).json({ error: err.message });
+    return res.status(200).json({ message: "No token found!" });
   }
   // decode the token within the cookie
   const decodedToken = jwt.verify(token, process.env.JWT_KEY);
