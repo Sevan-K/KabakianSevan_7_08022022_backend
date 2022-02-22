@@ -17,6 +17,9 @@ require("dotenv").config();
 // cookies parser module is required
 const cookieParser = require("cookie-parser");
 
+// path package is required
+const path = require("path");
+
 // const cors = require("cors");
 
 /* ------------------------------------- */
@@ -78,6 +81,9 @@ app.use(express.json());
 
 // add the cookie-parser
 app.use(cookieParser());
+
+// setting the destination file to serve when /images route is used
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // setting common path for each routes
 app.use("/api/auth", authRoutes);

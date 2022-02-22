@@ -53,14 +53,36 @@ exports.readOneUser = async (req, res, next) => {
 /*      UpdateUser controler section      */
 /* -------------------------------------- */
 exports.updateUser = (req, res, next) => {
-  console.log("Update one user");
-  res.status(200).json("Update one user");
+  try {
+    // console.log("=== body ===>", req.body);
+    // console.log("=== file ===>", !!req.file);
+    // getting user object
+    const userObject = req.file
+      ? {
+          ...JSON.parse(req.body.user),
+          imageUrl: `${req.protocol}://${req.get("host")}/images/${
+            req.file.filename
+          }`,
+        }
+      : { ...req.body };
+    console.log("=== userObject ===>", userObject);
+
+    // check auth
+
+    // supprimer l'ancier fichier si besoin
+
+    // validation des champs
+
+    // enregistrer l'utilisateur dans la BDD
+
+    res.status(200).json({ user: userObject });
+  } catch (err) {
+    // sending a response with a status code 400 and an error message
+    res.status(err.status || 400).json({ error: err.message });
+  }
 };
 
 /* -------------------------------------- */
 /*      DeleteUser controler section      */
 /* -------------------------------------- */
-exports.deleteUser = (req, res, next) => {
-  console.log("Delete one user");
-  res.status(200).json("Delete one user");
-};
+exports.deleteUser = (req, res, next) => {};

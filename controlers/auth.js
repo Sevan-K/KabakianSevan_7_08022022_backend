@@ -85,8 +85,9 @@ exports.login = async (req, res, next) => {
       .cookie("token", token, {
         httpOnly: true,
         maxAge: cookieMaxAge,
-        secure: true,
         expires: new Date(Date.now() + cookieMaxAge),
+        secure: true,
+        sameSite: "lax",
       })
       .status(200)
       .json({ message: "Token cookie successfully sent !" });
@@ -103,7 +104,7 @@ exports.login = async (req, res, next) => {
 exports.tokenToId = (req, res, next) => {
   // get cookie from the request
   const token = req.cookies.token;
-  console.log("toketoid :", token);
+  // console.log("=== tokentoid ===>", token);
   // if there is no cookie send an error message
   if (!token) {
     return res
