@@ -86,13 +86,14 @@ exports.login = async (req, res, next) => {
         httpOnly: true,
         maxAge: cookieMaxAge,
         secure: true,
+        expires: new Date(Date.now() + cookieMaxAge),
       })
       .status(200)
       .json({ message: "Token cookie successfully sent !" });
 
     // generate a token with the}
   } catch (err) {
-    res.status(error.status || 500).json({ message: error.message });
+    res.status(err.status || 500).json({ message: err.message });
   }
 };
 
@@ -102,9 +103,13 @@ exports.login = async (req, res, next) => {
 exports.tokenToId = (req, res, next) => {
   // get cookie from the request
   const token = req.cookies.token;
+  console.log("toketoid :", token);
   // if there is no cookie send an error message
   if (!token) {
-    return res.status(200).json({ message: "No token found!" });
+    return res
+      .clearCookie("token")
+      .status(200)
+      .json({ message: "No token found!" });
   }
   // decode the token within the cookie
   const decodedToken = jwt.verify(token, process.env.JWT_KEY);
@@ -112,6 +117,7 @@ exports.tokenToId = (req, res, next) => {
   if (!decodedToken) {
     const err = new Error("Token is not valid !");
     return res.clearCookie("token").status(403).json({ error: err.message });
+    // return res.clearCookie("token").end()
   }
   // response status code is set to 200 and userId is sent
   res.status(200).json({ userId: decodedToken.userId });
@@ -128,8 +134,6 @@ exports.logout = (req, res, next) => {
     const err = new Error("Not logged in !");
     return res.status(200).json({ error: err.message });
   }
-  res
-    .clearCookie("token")
-    .status(200)
-    .json({ message: "Successfully Log Out !" });
+  // clear cookie token
+  res.clearCookie("token").end();
 };
