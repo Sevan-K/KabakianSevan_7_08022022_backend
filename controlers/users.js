@@ -160,7 +160,7 @@ exports.deleteUser = async (req, res, next) => {
     // removing user from DB
     await User.destroy({ where: { id: idFromReqParams } });
 
-    // sending a response with a status code 200, a message and clearcooki
+    // sending a response with a status code 200, a message and clearcookie
     res.clearCookie("token").status(200).json({ message: "User deleted" });
   } catch (err) {
     // sending a response with a status code 500 and an error message

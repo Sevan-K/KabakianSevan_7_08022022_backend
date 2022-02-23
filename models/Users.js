@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        // validate: { is: passwordRegex },
+        validate: { is: passwordRegex },
       },
       imageUrl: {
         type: DataTypes.STRING,
