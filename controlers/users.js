@@ -2,6 +2,7 @@
 /*      Variables and imports section      */
 /* --------------------------------------- */
 const { User } = require("../models");
+const fs = require("fs");
 
 /* ---------------------------------------- */
 /*      ReadAllUsers controler section      */
@@ -52,7 +53,7 @@ exports.readOneUser = async (req, res, next) => {
 /* -------------------------------------- */
 /*      UpdateUser controler section      */
 /* -------------------------------------- */
-exports.updateUser = (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
   try {
     // console.log("=== body ===>", req.body);
     // console.log("=== file ===>", !!req.file);
@@ -67,14 +68,51 @@ exports.updateUser = (req, res, next) => {
       : { ...req.body };
     console.log("=== userObject ===>", userObject);
 
-    // check auth
+    // check auth to only allow a user to modify its own profile
+    if (req.auth.userId !== userObject.id) {
+      return res.status(403).json({ error: "Forbiden request !" });
+    }
 
     // supprimer l'ancier fichier si besoin
-
+    if (!!req.file) {
+      // looking for the user to update
+      const [userToUpdate] = await User.findAll({
+        where: { id: req.params.id },
+      });
+      console.log("=== userToUpdate ===>", userToUpdate);
+      // checking if the user is found
+      if (!userToUpdate) {
+        return res.status(404).json({ error: "User to update not found !" });
+      }
+      // if image Url exist
+      if (!!userToUpdate.imageUrl) {
+        // getting file name from image url
+        const filenameToDelete = userToUpdate.imageUrl.split("images/")[1];
+        console.log("=== filenameToDelete ===>", filenameToDelete);
+        // using file system to delete the old image
+        fs.unlink(`images/${filenameToDelete}`, (err) => {
+          if (!!err) {
+            console.log("failed to delete local image" + err);
+          }
+        });
+      }
+    }
     // validation des champs
+    // utiliser une regex mais pas nécessairement JOI
+
+    // updating bio value on DB
+    await User.update(
+      { bio: userObject.bio },
+      { where: { id: req.params.id } }
+    );
+
+    // updating imageUrl value on DB
+    await User.update(
+      { imageUrl: userObject.imageUrl },
+      { where: { id: req.params.id } }
+    );
 
     // enregistrer l'utilisateur dans la BDD
-
     res.status(200).json({ user: userObject });
   } catch (err) {
     // sending a response with a status code 400 and an error message
