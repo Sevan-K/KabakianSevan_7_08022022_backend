@@ -82,8 +82,11 @@ app.use(express.json());
 // add the cookie-parser
 app.use(cookieParser());
 
-// setting the destination file to serve when /images route is used
-app.use("/images", express.static(path.join(__dirname, "images")));
+// setting the destination file to serve when /images/profile route is used
+app.use(
+  "/images/profile",
+  express.static(path.join(__dirname, "images/profile"))
+);
 
 // setting common path for each routes
 app.use("/api/auth", authRoutes);

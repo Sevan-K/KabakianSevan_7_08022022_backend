@@ -8,7 +8,7 @@ const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
 
 // multer middleware
-const multer = require("../middleware/multer-config");
+const multer = require("../middleware/userMulterConfig");
 
 // users controler are imported
 const {
@@ -22,7 +22,7 @@ const {
 router.get("/", checkAuth, readAllUsers);
 router.get("/:id", checkAuth, readOneUser);
 router.put("/:id", multer, checkAuth, updateUser);
-router.delete("/id", checkAuth, deleteUser);
+router.delete("/:id", checkAuth, deleteUser);
 
 // export router to use it in app file
 module.exports = router;

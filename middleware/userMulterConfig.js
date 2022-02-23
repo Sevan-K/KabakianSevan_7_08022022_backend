@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
   // setting destination file
   destination: (req, file, callback) => {
     // image file is the destination
-    callback(null, "images");
+    callback(null, "images/profile");
   },
   filename: (req, file, callback) => {
     // console.log("req from multer", req);

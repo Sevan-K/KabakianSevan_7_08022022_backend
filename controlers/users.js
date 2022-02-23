@@ -45,8 +45,8 @@ exports.readOneUser = async (req, res, next) => {
     // sending a response with a status code 200 and user object
     res.status(200).json({ user });
   } catch (err) {
-    // sending a response with a status code 400 and an error message
-    res.status(err.status || 400).json({ error: err.message });
+    // sending a response with a status code 500 and an error message
+    res.status(err.status || 500).json({ error: err.message });
   }
 };
 
@@ -61,16 +61,18 @@ exports.updateUser = async (req, res, next) => {
     const userObject = req.file
       ? {
           ...JSON.parse(req.body.user),
-          imageUrl: `${req.protocol}://${req.get("host")}/images/${
+          imageUrl: `${req.protocol}://${req.get("host")}/images/profile/${
             req.file.filename
           }`,
         }
       : { ...req.body };
-    console.log("=== userObject ===>", userObject);
+    // console.log("=== userObject ===>", userObject);
 
     // check auth to only allow a user to modify its own profile
     if (req.auth.userId !== userObject.id) {
-      return res.status(403).json({ error: "Forbiden request !" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden profile update request !" });
     }
 
     // supprimer l'ancier fichier si besoin
@@ -87,10 +89,10 @@ exports.updateUser = async (req, res, next) => {
       // if image Url exist
       if (!!userToUpdate.imageUrl) {
         // getting file name from image url
-        const filenameToDelete = userToUpdate.imageUrl.split("images/")[1];
-        console.log("=== filenameToDelete ===>", filenameToDelete);
+        const filenameToDelete = userToUpdate.imageUrl.split("profile/")[1];
+        // console.log("=== filenameToDelete ===>", filenameToDelete);
         // using file system to delete the old image
-        fs.unlink(`images/${filenameToDelete}`, (err) => {
+        fs.unlink(`images/profile/${filenameToDelete}`, (err) => {
           if (!!err) {
             console.log("failed to delete local image" + err);
           }
@@ -112,15 +114,56 @@ exports.updateUser = async (req, res, next) => {
       { where: { id: req.params.id } }
     );
 
-    // enregistrer l'utilisateur dans la BDD
+    // sending a response with a status code 200 and user object
     res.status(200).json({ user: userObject });
   } catch (err) {
-    // sending a response with a status code 400 and an error message
-    res.status(err.status || 400).json({ error: err.message });
+    // sending a response with a status code 500 and an error message
+    res.status(err.status || 500).json({ error: err.message });
   }
 };
 
 /* -------------------------------------- */
 /*      DeleteUser controler section      */
 /* -------------------------------------- */
-exports.deleteUser = (req, res, next) => {};
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const idFromReqParams = parseInt(req.params.id, 10);
+    // check auth to only allow a user to delete its own profile
+    if (req.auth.userId !== idFromReqParams) {
+      return res
+        .status(403)
+        .json({ error: "Delete profile request forbidden!" });
+    }
+
+    // looking for the user to delete
+    const [userToDelete] = await User.findAll({
+      where: { id: idFromReqParams },
+    });
+    // console.log("=== userToDelete ===>", userToDelete);
+    // checking if the user is found
+    if (!userToDelete) {
+      return res.status(404).json({ error: "User to delete not found !" });
+    }
+    // if image Url exist
+    if (!!userToDelete.imageUrl) {
+      // getting file name from image url
+      const filenameToDelete = userToDelete.imageUrl.split("profile/")[1];
+      // console.log("=== filenameToDelete ===>", filenameToDelete);
+      // using file system to delete the old image
+      fs.unlink(`images/profile/${filenameToDelete}`, (err) => {
+        if (!!err) {
+          console.log("failed to delete local image" + err);
+        }
+      });
+    }
+
+    // removing user from DB
+    await User.destroy({ where: { id: idFromReqParams } });
+
+    // sending a response with a status code 200, a message and clearcooki
+    res.clearCookie("token").status(200).json({ message: "User deleted" });
+  } catch (err) {
+    // sending a response with a status code 500 and an error message
+    res.status(err.status || 500).json({ error: err.message });
+  }
+};
