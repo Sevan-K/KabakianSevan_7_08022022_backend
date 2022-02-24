@@ -9,7 +9,8 @@ const app = express();
 
 // routes are required
 const authRoutes = require("./routes/auth");
-const usersRoute = require("./routes/users");
+const usersRoutes = require("./routes/users");
+const postsRoutes = require("./routes/posts");
 
 // dotenv module is required
 require("dotenv").config();
@@ -90,7 +91,8 @@ app.use(
 
 // setting common path for each routes
 app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoute);
+app.use("/api/users", usersRoutes);
+app.use("api/posts", postsRoutes);
 
 // app is exported to be used in server file
 module.exports = app;
