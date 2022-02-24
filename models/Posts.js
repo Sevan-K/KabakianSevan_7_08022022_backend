@@ -32,13 +32,16 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      content: { allowNull: false, type: DataTypes.STRING },
+      content: { allowNull: false, type: DataTypes.STRING(2000) },
       //   userId: {
       //     allowNull: false,
       //     type: DataTypes.INTEGER,
       //     references: { model: "Users", key: "id"},
       //   },
-      likes: { type: DataTypes.INTEGER },
+      imageUrl: {
+        type: DataTypes.STRING,
+      },
+      likes: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
     {
       sequelize,

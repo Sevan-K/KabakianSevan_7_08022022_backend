@@ -88,11 +88,13 @@ app.use(
   "/images/profile",
   express.static(path.join(__dirname, "images/profile"))
 );
+// setting the destination file to serve when /images/post route is used
+app.use("/images/post", express.static(path.join(__dirname, "images/post")));
 
 // setting common path for each routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
-app.use("api/posts", postsRoutes);
+app.use("/api/posts", postsRoutes);
 
 // app is exported to be used in server file
 module.exports = app;

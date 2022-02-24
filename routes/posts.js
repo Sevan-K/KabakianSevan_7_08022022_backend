@@ -1,14 +1,16 @@
 // express is required
 const express = require("express");
+
+// create the router using the Router express method
+const router = express.Router();
+
+// controler middleware are required
 const {
   readAllPosts,
   createPost,
   updatePost,
   deletePost,
 } = require("../controlers/posts");
-
-// create the router using the Router express method
-const router = express.Router();
 
 // adding needed routes
 router.get("/", readAllPosts);
