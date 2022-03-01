@@ -9,7 +9,7 @@ const { Post } = require("../models");
 exports.readAllPosts = async (req, res, next) => {
   try {
     const posts = await Post.findAll();
-    console.log("=== posts ===>", posts);
+    // console.log("=== posts ===>", posts);
     // sending a response with a status code 200 and posts
     res.status(200).json({ posts });
   } catch (err) {
@@ -39,7 +39,9 @@ exports.createPost = async (req, res, next) => {
     await Post.create(postObject);
 
     // sending a response with a status code 200 and a message
-    res.status(201).json({ message: "Post successfully created !" });
+    res
+      .status(201)
+      .json({ message: "Post successfully created !", post: postObject });
   } catch (err) {
     // sending a response with a status code 500 and an error message
     res.status(err.status || 500).json({ error: err.message });
