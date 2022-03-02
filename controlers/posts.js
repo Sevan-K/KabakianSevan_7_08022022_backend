@@ -8,7 +8,12 @@ const { Post } = require("../models");
 /* --------------------------------------- */
 exports.readAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.findAll();
+    const posts = await Post.findAll({
+      order: [
+        ["updatedAt", "DESC"],
+        ["id", "ASC"],
+      ],
+    });
     // console.log("=== posts ===>", posts);
     // sending a response with a status code 200 and posts
     res.status(200).json({ posts });

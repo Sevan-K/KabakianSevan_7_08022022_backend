@@ -15,8 +15,11 @@ const {
 // multer middleware is required
 const multer = require("../middleware/postMulterConfig");
 
+// auth middleware is required
+const checkAuth = require("../middleware/checkAuth");
+
 // adding needed routes
-router.get("/", readAllPosts);
+router.get("/", checkAuth, readAllPosts);
 router.post("/", multer, createPost);
 router.put("/:id", multer, updatePost);
 router.delete("/:id", deletePost);
