@@ -21,7 +21,7 @@ const checkAuth = require("../middleware/checkAuth");
 // adding needed routes
 router.get("/", checkAuth, readAllPosts);
 router.post("/", checkAuth, multer, createPost);
-router.put("/:id", multer, updatePost);
+router.put("/:id", checkAuth, multer, updatePost);
 router.delete("/:id", checkAuth, deletePost);
 
 // export router to use it in app file
