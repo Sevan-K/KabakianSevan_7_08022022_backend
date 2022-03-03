@@ -101,12 +101,12 @@ exports.deletePost = async (req, res, next) => {
     // get post id from req params
     const postIdFromReqParams = parseInt(req.params.id, 10);
 
-    // looking for the user to delete
+    // looking for the post to delete
     const [postToDelete] = await Post.findAll({
       where: { id: postIdFromReqParams },
     });
     // console.log("=== postToDelete ===>", postToDelete);
-    // checking if the user is found
+    // checking if the post is found
     if (!postToDelete) {
       return res.status(404).json({ error: "Post to delete not found !" });
     }

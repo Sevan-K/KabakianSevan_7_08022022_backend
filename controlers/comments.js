@@ -47,6 +47,24 @@ exports.updateComment = async (req, res, nex) => {
     // get commentId from request params
     const commentId = req.params.id;
 
+    // looking for the comment to update
+    const [commentToUpdate] = await Post.findAll({
+      where: { id: commentId },
+    });
+    // console.log("=== commentToUpdate ===>", commentToUpdate);
+
+    // checking if the comment is found
+    if (!commentToUpdate) {
+      return res.status(404).json({ error: "Comment to update not found !" });
+    }
+
+    // check auth to only allow a user to delete its own profile
+    if (req.auth.userId !== commentToUpdate.userId) {
+      return res
+        .status(403)
+        .json({ error: "Delete comment request forbidden !" });
+    }
+
     // get updatedContent from request
     const updatedContent = req.body.content;
     // console.log("=== updatedContent ===>", updatedContent);
@@ -74,6 +92,24 @@ exports.deleteComment = async (req, res, nex) => {
   try {
     // get commentId from request params
     const commentId = req.params.id;
+
+    // looking for the comment to delete
+    const [commentToDelete] = await Post.findAll({
+      where: { id: commentId },
+    });
+    // console.log("=== commentToDelete ===>", commentToDelete);
+
+    // checking if the comment is found
+    if (!commentToDelete) {
+      return res.status(404).json({ error: "Comment to delete not found !" });
+    }
+
+    // check auth to only allow a user to delete its own profile
+    if (req.auth.userId !== commentToDelete.userId) {
+      return res
+        .status(403)
+        .json({ error: "Delete comment request forbidden !" });
+    }
 
     // removing the comment with the same id than the one in request params from DB
     await Comment.destroy({ where: { id: commentId } });
