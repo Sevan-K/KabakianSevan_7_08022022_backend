@@ -9,6 +9,7 @@ const fs = require("fs");
 /* ---------------------------------------- */
 exports.readAllPosts = async (req, res, next) => {
   try {
+    // look for all the post ordered by creation date
     const posts = await Post.findAll({
       order: [
         ["createdAt", "DESC"],
@@ -29,8 +30,6 @@ exports.readAllPosts = async (req, res, next) => {
 /* -------------------------------------- */
 exports.createPost = async (req, res, next) => {
   try {
-    // check if user is authenticated
-
     // creating postObject according to req.file presence
     const postObject = req.file
       ? {
@@ -44,10 +43,8 @@ exports.createPost = async (req, res, next) => {
     // inserting new post on DB
     await Post.create(postObject);
 
-    // sending a response with a status code 200 and a message
-    res
-      .status(201)
-      .json({ message: "Post successfully created !", post: postObject });
+    // sending a response with a status code 201 and a message
+    res.status(201).json({ message: "Post successfully created !" });
   } catch (err) {
     // sending a response with a status code 500 and an error message
     res.status(err.status || 500).json({ error: err.message });
@@ -80,7 +77,7 @@ exports.updatePost = async (req, res, next) => {
 
     // get updatedContent from request
     const updatedContent = req.body.content;
-    console.log("=== updatedContent ===>", updatedContent);
+    // console.log("=== updatedContent ===>", updatedContent);
 
     // update post content where id is equal to the one in the request
     await Post.update(

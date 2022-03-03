@@ -13,10 +13,10 @@ const {
 } = require("../controlers/comments");
 
 // auth middleware is required
-// const checkAuth = require("../middleware/checkAuth");
+const checkAuth = require("../middleware/checkAuth");
 
 // adding needed routes
-router.get("/",/* checkAuth, */ readAllComments);
+router.get("/",checkAuth, readAllComments);
 router.post("/", /* checkAuth, */ createComment);
 router.put("/:id", /* checkAuth, */ updateComment);
 router.delete("/:id", /* checkAuth, */ deleteComment);
