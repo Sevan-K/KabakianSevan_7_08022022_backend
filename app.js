@@ -11,6 +11,7 @@ const app = express();
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 const postsRoutes = require("./routes/posts");
+const commentsRoutes = require("./routes/comments");
 
 // dotenv module is required
 require("dotenv").config();
@@ -95,6 +96,7 @@ app.use("/images/post", express.static(path.join(__dirname, "images/post")));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/posts", postsRoutes);
+app.use("/api/comments", commentsRoutes);
 
 // app is exported to be used in server file
 module.exports = app;

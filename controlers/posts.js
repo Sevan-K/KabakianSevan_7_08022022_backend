@@ -4,9 +4,9 @@
 const { Post } = require("../models");
 const fs = require("fs");
 
-/* --------------------------------------- */
+/* ---------------------------------------- */
 /*      readAllPosts controler section      */
-/* --------------------------------------- */
+/* ---------------------------------------- */
 exports.readAllPosts = async (req, res, next) => {
   try {
     const posts = await Post.findAll({
@@ -24,9 +24,9 @@ exports.readAllPosts = async (req, res, next) => {
   }
 };
 
-/* --------------------------------------- */
+/* -------------------------------------- */
 /*      createPost controler section      */
-/* --------------------------------------- */
+/* -------------------------------------- */
 exports.createPost = async (req, res, next) => {
   try {
     // check if user is authenticated
@@ -54,9 +54,9 @@ exports.createPost = async (req, res, next) => {
   }
 };
 
-/* --------------------------------------- */
+/* -------------------------------------- */
 /*      updatePost controler section      */
-/* --------------------------------------- */
+/* -------------------------------------- */
 exports.updatePost = async (req, res, next) => {
   try {
     // get post id from req params
@@ -96,9 +96,9 @@ exports.updatePost = async (req, res, next) => {
   }
 };
 
-/* --------------------------------------- */
+/* -------------------------------------- */
 /*      deletePost controler section      */
-/* --------------------------------------- */
+/* -------------------------------------- */
 exports.deletePost = async (req, res, next) => {
   try {
     // get post id from req params
