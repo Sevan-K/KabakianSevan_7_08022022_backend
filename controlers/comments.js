@@ -48,7 +48,7 @@ exports.updateComment = async (req, res, nex) => {
     const commentId = req.params.id;
 
     // looking for the comment to update
-    const [commentToUpdate] = await Post.findAll({
+    const [commentToUpdate] = await Comment.findAll({
       where: { id: commentId },
     });
     // console.log("=== commentToUpdate ===>", commentToUpdate);
@@ -92,12 +92,14 @@ exports.deleteComment = async (req, res, nex) => {
   try {
     // get commentId from request params
     const commentId = req.params.id;
+    console.log("=== commentId ===>", commentId);
+
 
     // looking for the comment to delete
-    const [commentToDelete] = await Post.findAll({
+    const [commentToDelete] = await Comment.findAll({
       where: { id: commentId },
     });
-    // console.log("=== commentToDelete ===>", commentToDelete);
+    console.log("=== commentToDelete ===>", commentToDelete);
 
     // checking if the comment is found
     if (!commentToDelete) {
