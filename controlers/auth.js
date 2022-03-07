@@ -57,11 +57,9 @@ exports.signup = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     // look for the user with the same in database
-    const userArray = await User.findAll({ where: { email: req.body.email } });
-    // recovering the data from the array recieved
-    const user = userArray[0];
+    const [user] = await User.findAll({ where: { email: req.body.email } });
     // handle case where user is not found
-    if (user.length === 0) {
+    if (!user) {
       const err = new Error("User not found !");
       return res.status(404).json({ error: err.message });
     }
@@ -77,9 +75,13 @@ exports.login = async (req, res, next) => {
     }
     // === > code below is accessible only if user is found and if password id valid
     // a token is signed with userId value (expire unit seconds)
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_KEY, {
-      expiresIn: `${tokenMaxAge}h`,
-    });
+    const token = jwt.sign(
+      { userId: user.id, isAdmin: user.admin },
+      process.env.JWT_KEY,
+      {
+        expiresIn: `${tokenMaxAge}h`,
+      }
+    );
     // set response status code to 200, add a cookie with the token (expire unit mili seconds)
     res
       .cookie("token", token, {

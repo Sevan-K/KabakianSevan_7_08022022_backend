@@ -59,7 +59,10 @@ exports.updateComment = async (req, res, nex) => {
     }
 
     // check auth to only allow a user to delete its own profile
-    if (req.auth.userId !== commentToUpdate.userId) {
+    if (
+      req.auth.userId !== commentToUpdate.userId &&
+      req.auth.isAdmin === false
+    ) {
       return res
         .status(403)
         .json({ error: "Delete comment request forbidden !" });
@@ -92,14 +95,13 @@ exports.deleteComment = async (req, res, nex) => {
   try {
     // get commentId from request params
     const commentId = req.params.id;
-    console.log("=== commentId ===>", commentId);
-
+    // console.log("=== commentId ===>", commentId);
 
     // looking for the comment to delete
     const [commentToDelete] = await Comment.findAll({
       where: { id: commentId },
     });
-    console.log("=== commentToDelete ===>", commentToDelete);
+    // console.log("=== commentToDelete ===>", commentToDelete);
 
     // checking if the comment is found
     if (!commentToDelete) {
@@ -107,7 +109,10 @@ exports.deleteComment = async (req, res, nex) => {
     }
 
     // check auth to only allow a user to delete its own profile
-    if (req.auth.userId !== commentToDelete.userId) {
+    if (
+      req.auth.userId !== commentToDelete.userId &&
+      req.auth.isAdmin === false
+    ) {
       return res
         .status(403)
         .json({ error: "Delete comment request forbidden !" });

@@ -71,7 +71,7 @@ exports.updatePost = async (req, res, next) => {
     }
 
     // check auth to only allow a user to modify its own profile
-    if (req.auth.userId !== postToUpdate.userId) {
+    if (req.auth.userId !== postToUpdate.userId && req.auth.isAdmin === false) {
       return res.status(403).json({ error: "Update post request forbidden !" });
     }
 
@@ -112,7 +112,7 @@ exports.deletePost = async (req, res, next) => {
     }
 
     // check auth to only allow a user to delete its own profile
-    if (req.auth.userId !== postToDelete.userId) {
+    if (req.auth.userId !== postToDelete.userId && req.auth.isAdmin === false) {
       return res.status(403).json({ error: "Delete post request forbidden !" });
     }
 

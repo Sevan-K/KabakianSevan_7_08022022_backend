@@ -19,10 +19,9 @@ module.exports = (req, res, next) => {
       const err = new Error("Token is not valid !");
       return res.clearCookie("token").status(403).json({ error: err.message });
     }
-    // we get the userID inside the token
-    const userIdFromToken = decodedToken.userId;
+
     // the userIdFromToken is added to the request
-    req.auth = { userId: userIdFromToken };
+    req.auth = { userId: decodedToken.userId, isAdmin: decodedToken.isAdmin };
     // if there is a userId in request's body and if it is not the same than the one from the token
     if (req.body.userId && req.body.userId !== userIdFromToken) {
       // we throw an error

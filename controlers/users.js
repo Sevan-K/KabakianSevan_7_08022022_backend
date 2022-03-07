@@ -30,7 +30,7 @@ exports.readOneUser = async (req, res, next) => {
     // the concerned id is recoverd from request parameters
     const userIdToRead = parseInt(req.params.id, 10);
     // check if userId from the decoded token is the same than the one to read
-    if (req.auth.userId !== userIdToRead) {
+    if (req.auth.userId !== userIdToRead && req.auth.isAdmin === false) {
       return res
         .status(403)
         .json({ error: "You do not have access to that content !" });
@@ -69,7 +69,7 @@ exports.updateUser = async (req, res, next) => {
     // console.log("=== userObject ===>", userObject);
 
     // check auth to only allow a user to modify its own profile
-    if (req.auth.userId !== userObject.id) {
+    if (req.auth.userId !== userObject.id && req.auth.isAdmin === false) {
       return res
         .status(403)
         .json({ error: "Forbidden profile update request !" });
@@ -81,7 +81,7 @@ exports.updateUser = async (req, res, next) => {
       const [userToUpdate] = await User.findAll({
         where: { id: req.params.id },
       });
-      console.log("=== userToUpdate ===>", userToUpdate);
+      // console.log("=== userToUpdate ===>", userToUpdate);
       // checking if the user is found
       if (!userToUpdate) {
         return res.status(404).json({ error: "User to update not found !" });
@@ -129,7 +129,7 @@ exports.deleteUser = async (req, res, next) => {
   try {
     const idFromReqParams = parseInt(req.params.id, 10);
     // check auth to only allow a user to delete its own profile
-    if (req.auth.userId !== idFromReqParams) {
+    if (req.auth.userId !== idFromReqParams && req.auth.isAdmin === false) {
       return res
         .status(403)
         .json({ error: "Delete profile request forbidden!" });
