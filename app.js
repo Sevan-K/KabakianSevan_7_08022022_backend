@@ -22,6 +22,8 @@ const cookieParser = require("cookie-parser");
 // path package is required
 const path = require("path");
 
+const helmet = require("helmet");
+
 // const cors = require("cors");
 
 /* ------------------------------------- */
@@ -51,6 +53,14 @@ db.sequelize
 /* ---------------------------- */
 /*      Middleware section      */
 /* ---------------------------- */
+// helmet middleware
+app.use(helmet());
+app.use(
+  helmet.crossOriginResourcePolicy(
+    //setting crossOriginResourcePolicy to cross-origin to avoid conflict with the header we set later
+    { policy: "cross-origin" }
+  )
+);
 
 // middleware to add header to responses
 app.use((req, res, next) => {
