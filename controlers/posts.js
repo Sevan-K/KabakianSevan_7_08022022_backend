@@ -79,6 +79,16 @@ exports.updatePost = async (req, res, next) => {
     const updatedContent = req.body.content;
     // console.log("=== updatedContent ===>", updatedContent);
 
+    // regex for content
+    const regexForContent =
+      /^\b((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)]{2,2000}(?<!-)(?<!'))$/;
+    // check if bio is valid
+    if (!regexForContent.test(updatedContent)) {
+      return res
+        .status(400)
+        .json({ error: "Post content contains non accepted caracters" });
+    }
+
     // update post content where id is equal to the one in the request
     await Post.update(
       { content: updatedContent },

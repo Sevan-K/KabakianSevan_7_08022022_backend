@@ -72,6 +72,16 @@ exports.updateComment = async (req, res, nex) => {
     const updatedContent = req.body.content;
     // console.log("=== updatedContent ===>", updatedContent);
 
+    // regex for content
+    const regexForContent =
+      /^\b((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)]{2,2000}(?<!-)(?<!'))$/;
+    // check if bio is valid
+    if (!regexForContent.test(updatedContent)) {
+      return res
+        .status(400)
+        .json({ error: "Comment content contains non accepted caracters" });
+    }
+
     // update comment which id is the same than the one on request params
     await Comment.update(
       { content: updatedContent },

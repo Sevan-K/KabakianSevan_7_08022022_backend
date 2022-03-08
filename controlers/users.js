@@ -75,6 +75,16 @@ exports.updateUser = async (req, res, next) => {
         .json({ error: "Forbidden profile update request !" });
     }
 
+    // regex for content
+    const regexForContent =
+      /^\b((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)]{2,2000}(?<!-)(?<!'))$/;
+    // check if bio is valid
+    if (!regexForContent.test(userObject.bio)) {
+      return res
+        .status(400)
+        .json({ error: "User bio contains non accepted caracters" });
+    }
+
     // supprimer l'ancier fichier si besoin
     if (!!req.file) {
       // looking for the user to update

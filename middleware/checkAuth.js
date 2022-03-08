@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
     // the userIdFromToken is added to the request
     req.auth = { userId: decodedToken.userId, isAdmin: decodedToken.isAdmin };
     // if there is a userId in request's body and if it is not the same than the one from the token
-    if (req.body.userId && req.body.userId !== userIdFromToken) {
+    if (req.body.userId && req.body.userId !== decodedToken.userId) {
       // we throw an error
       res.status(403).json({ error: "Invalid userId" });
     }

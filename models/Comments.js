@@ -1,3 +1,7 @@
+// regex for content
+const regexForContent =
+  /^\b((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)]{2,2000}(?<!-)(?<!'))$/;
+
 ("use strict");
 
 const { Model } = require("sequelize");
@@ -21,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // state that a comment belong to one post
-      models.Comment.belongsTo(models.Post,{
+      models.Comment.belongsTo(models.Post, {
         foreignKey: {
           name: "postId",
           allowNull: false,
@@ -39,7 +43,11 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      content: { allowNull: false, type: DataTypes.STRING(2000) },
+      content: {
+        allowNull: false,
+        type: DataTypes.STRING(2000),
+        validate: { is: regexForContent },
+      },
     },
     {
       sequelize,
