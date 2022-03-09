@@ -81,7 +81,7 @@ exports.updatePost = async (req, res, next) => {
 
     // regex for content
     const regexForContent =
-      /^\b((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)]{2,2000}(?<!-)(?<!'))$/;
+      /^((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)\^]{2,2000}(?<!-)(?<!'))$/;
     // check if bio is valid
     if (!regexForContent.test(updatedContent)) {
       return res

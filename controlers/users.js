@@ -77,7 +77,7 @@ exports.updateUser = async (req, res, next) => {
 
     // regex for content
     const regexForContent =
-      /^\b((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)]{2,2000}(?<!-)(?<!'))$/;
+      /^((?!-)(?!.*--)(?!')(?!.*'')[-A-ZÀ-ÿa-z0-9!,?. ':;\(\)\^]{2,2000}(?<!-)(?<!'))$/;
     // check if bio is valid
     if (!regexForContent.test(userObject.bio)) {
       return res
@@ -170,8 +170,14 @@ exports.deleteUser = async (req, res, next) => {
     // removing user from DB
     await User.destroy({ where: { id: idFromReqParams } });
 
-    // sending a response with a status code 200, a message and clearcookie
-    res.clearCookie("token").status(200).json({ message: "User deleted" });
+    // if the user delete itself
+    if (idFromReqParams === req.auth.userId) {
+      // sending a response with a status code 200, a message and clearcookie
+      res.clearCookie("token").status(200).json({ message: "User deleted" });
+    } else {
+      // sending a response with a status code 200, a message
+      res.status(200).json({ message: "User deleted" });
+    }
   } catch (err) {
     // sending a response with a status code 500 and an error message
     res.status(err.status || 500).json({ error: err.message });
