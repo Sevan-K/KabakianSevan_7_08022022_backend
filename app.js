@@ -31,13 +31,6 @@ const helmet = require("helmet");
 /* ------------------------------------- */
 // on se synchronyse avec la base de donnée
 const db = require("./models");
-// db.sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log("Connection has been established successfully.");
-//     // ajouter le listen à l'intérieur
-//   })
-//   .catch((error) => console.log("Unable to connect to the database:", error));
 
 db.sequelize
   .sync()
@@ -77,16 +70,6 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
-
-// const corsOptions = {
-//   origin: process.env.CLIENT_URL,
-//   credentials: true,
-//   allowedHeaders: ["sessionId", "Content-Type"],
-//   exposedHeaders: ["sessionId"],
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   preflightContinue: false,
-// };
-// app.use(cors(corsOptions));
 
 // code to intercept request that have a JSON type content
 app.use(express.json());
