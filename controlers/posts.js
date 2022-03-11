@@ -1,7 +1,7 @@
 /* --------------------------------------- */
 /*      Variables and imports section      */
 /* --------------------------------------- */
-const { Post, Post_User } = require("../models");
+const { Post } = require("../models");
 const fs = require("fs");
 
 /* ---------------------------------------- */
@@ -144,52 +144,6 @@ exports.deletePost = async (req, res, next) => {
 
     // sending a response with a status code 200, a message and clearcookie
     res.status(200).json({ message: "Post deleted" });
-  } catch (err) {
-    // sending a response with a status code 500 and an error message
-    res.status(err.status || 500).json({ error: err.message });
-  }
-};
-
-/* ------------------------------------ */
-/*      getPostLikes controler section      */
-/* ------------------------------------ */
-exports.getPostLikes = async (req, res, next) => {};
-
-/* ------------------------------------ */
-/*      likePost controler section      */
-/* ------------------------------------ */
-
-exports.likePost = async (req, res, next) => {
-  try {
-    // get post id from req params
-    const postIdFromReqParams = parseInt(req.params.id, 10);
-
-    // get id of user liking post
-    const userId = req.body.userId;
-
-    // get all users'id liking this post
-    const likingUsers = await Post_User.findAll({
-      where: { postId: postIdFromReqParams },
-    });
-
-    // constant to check if user is already liking this post
-    const isUserLiking = likingUsers.reduce(
-      (acc, postUserObject) => (acc = postUserObject.userId === userId),
-      false
-    );
-    // console.log("=== isUserLiking ===>", isUserLiking);
-    if (isUserLiking) {
-      return res
-        .status(400)
-        .json({ message: "Post already likedby this user !" });
-    }
-
-    // adding couple postId / userId to the DB
-    Post_User.create({ postId: postIdFromReqParams, userId });
-
-    res.status(201).json({
-      message: "Post successfully liked !",
-    });
   } catch (err) {
     // sending a response with a status code 500 and an error message
     res.status(err.status || 500).json({ error: err.message });

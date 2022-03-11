@@ -10,9 +10,12 @@ const {
   createPost,
   updatePost,
   deletePost,
-  likePost,
-  getPostLikes,
 } = require("../controlers/posts");
+const {
+  readPostLikes,
+  likePost,
+  unlikePost,
+} = require("../controlers/postLikes");
 
 // multer middleware is required
 const multer = require("../middleware/postMulterConfig");
@@ -27,8 +30,9 @@ router.post("/", checkAuth, multer, createPost);
 router.put("/:id", checkAuth, multer, updatePost);
 router.delete("/:id", checkAuth, deletePost);
 //  ===> post routes related to likes
-router.get("/like", getPostLikes);
-router.post("/:id/like", likePost);
+router.get("/likes", checkAuth, readPostLikes);
+router.post("/:id/like", checkAuth, likePost);
+router.delete("/:id/like", checkAuth, unlikePost);
 
 // export router to use it in app file
 module.exports = router;
