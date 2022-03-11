@@ -24,8 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "CASCADE",
       });
-      // a User has many Post
-      //   models.User.hasMany(models.Post);
+
+      /*       // a post belong to many users (a post can be liked by many users)
+      models.Post.belongsToMany(models.User, {
+        through: models.Post_User,
+        onDelete: "CASCADE",
+      }); */
     }
   }
   Post.init(

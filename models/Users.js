@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      /*      // a user belongs to many posts (a user can like many post)
+      models.User.belongsToMany(models.Post, {
+        through: models.Post_User,
+        onDelete: "CASCADE",
+      }); */
     }
   }
   User.init(
