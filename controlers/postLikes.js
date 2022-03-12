@@ -81,7 +81,8 @@ exports.unlikePost = async (req, res, next) => {
 
     // constant to check if user is already liking this post
     const isUserLiking = likingUsers.reduce(
-      (acc, postUserObject) => (acc = postUserObject.userId === userId),
+      (acc, postUserObject) =>
+        postUserObject.userId === userId ? (acc = true) : acc,
       false
     );
     // console.log("=== isUserLiking ===>", isUserLiking);

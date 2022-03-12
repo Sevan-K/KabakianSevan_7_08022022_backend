@@ -11,13 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        references: { model: "Posts", key: "id", onDelete: "CASCADE" },
+        references: { model: "Posts", key: "id" },
+        onDelete: "CASCADE",
       },
       userId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        references: { model: "Users", key: "id", onDelete: "CASCADE" },
+        references: { model: "Users", key: "id" },
+        onDelete: "CASCADE",
       },
     },
     { sequelize, modelName: "Post_User" }
