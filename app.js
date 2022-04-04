@@ -7,11 +7,14 @@ const express = require("express");
 // creating app as an express application
 const app = express();
 
-// routes are required
-const authRoutes = require("./routes/auth");
-const usersRoutes = require("./routes/users");
-const postsRoutes = require("./routes/posts");
-const commentsRoutes = require("./routes/comments");
+// // routes are required
+// const authRoutes = require("./routes/auth");
+// const usersRoutes = require("./routes/users");
+// const postsRoutes = require("./routes/posts");
+// const commentsRoutes = require("./routes/comments");
+
+// routes file is required
+const routes = require("./routes");
 
 // dotenv module is required
 require("dotenv").config();
@@ -85,11 +88,14 @@ app.use(
 // setting the destination file to serve when /images/post route is used
 app.use("/images/post", express.static(path.join(__dirname, "images/post")));
 
-// setting common path for each routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
-app.use("/api/posts", postsRoutes);
-app.use("/api/comments", commentsRoutes);
+// // setting common path for each routes
+// app.use("/api/auth", authRoutes);
+// app.use("/api/users", usersRoutes);
+// app.use("/api/posts", postsRoutes);
+// app.use("/api/comments", commentsRoutes);
+
+// calling routes
+app.use(routes);
 
 // app is exported to be used in server file
 module.exports = app;
